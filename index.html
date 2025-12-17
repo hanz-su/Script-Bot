@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>waidn - 一个简单的文件分享系统</title>
+    <style>
+        /* --- General Styling --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #121212; /* Warna background gelap */
+            color: #e0e0e0;           /* Warna teks abu-abu terang */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* --- Main Container --- */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        /* --- Header --- */
+        h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            margin: 0;
+            letter-spacing: -2px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #9e9e9e;
+            margin-top: 5px;
+            margin-bottom: 40px;
+        }
+
+        /* --- Upload Area --- */
+        .upload-area {
+            border: 2px dashed #555;
+            border-radius: 10px;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+            transition: border-color 0.3s, background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-area.dragover {
+            border-color: #00bcd4; /* Warna aksen saat drag-over */
+            background-color: rgba(0, 188, 212, 0.1);
+        }
+
+        .upload-area p {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .upload-area .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        #fileInput {
+            display: none; /* Sembunyikan input file asli */
+        }
+        
+        /* --- File List --- */
+        #fileList {
+            text-align: left;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            transition: background-color 0.2s;
+        }
+
+        .file-item:hover {
+            background-color: #1e1e1e;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: #757575;
+        }
+
+        .file-details {
+            flex-grow: 1;
+        }
+
+        .file-name {
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .file-size {
+            font-size: 0.9rem;
+            color: #9e9e9e;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .file-actions button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #9e9e9e;
+            padding: 5px;
+            transition: color 0.2s;
+        }
+
+        .file-actions button:hover {
+            color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>waidn</h1>
+        <p class="subtitle">一个简单的文件分享系统</p>
+
+        <div class="upload-area" id="uploadArea">
+            <p class="icon">📁</p>
+            <p><strong>选择文件</strong></p>
+            <p>或将文件拖拽到此处上传</p>
+            <input type="file" id="fileInput" multiple>
+        </div>
+
+        <div id="fileList">
+            <!-- Daftar file akan dimunculkan di sini oleh JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+
+        // --- Event Listeners ---
+
+        // Klik pada area upload untuk membuka dialog file
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Tangani perubahan saat file dipilih melalui dialog
+        fileInput.addEventListener('change', (event) => {
+            handleFiles(event.target.files);
+        });
+
+        // Mencegah perilaku default drag-over
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        // Tambahkan class 'dragover' untuk styling
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.add('dragover');
+            }, false);
+        });
+
+        // Hapus class 'dragover'
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.remove('dragover');
+            }, false);
+        });
+
+        // Tangani file yang di-drop
+        uploadArea.addEventListener('drop', (event) => {
+            const dt = event.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }, false);
+
+
+        // --- Fungsi-fungsi ---
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function handleFiles(files) {
+            ([...files]).forEach(uploadFile);
+        }
+
+        function uploadFile(file) {
+            // --- SIMULASI: Menambahkan file ke daftar ---
+            // Di aplikasi asli, di sini terdapat kode untuk mengirim file ke server (misalnya menggunakan Fetch API)
+            
+            displayFile(file);
+        }
+
+        function displayFile(file) {
+            // Buat elemen untuk file baru
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+
+            // Tentukan ikon berdasarkan tipe file (sederhana)
+            let icon = '📄'; // Default ikon dokumen
+            if (file.type.startsWith('image/')) {
+                icon = '🖼️';
+            } else if (file.type.startsWith('video/')) {
+                icon = '🎬';
+            } else if (file.type.startsWith('audio/')) {
+                icon = '🎵';
+            } else if (file.type.includes('zip') || file.type.includes('rar')) {
+                icon = '🗜️';
+            }
+
+            // Format ukuran file
+            const fileSize = formatFileSize(file.size);
+
+            fileItem.innerHTML = `
+                <div class="file-icon">${icon}</div>
+                <div class="file-details">
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-size">${fileSize}</div>
+                </div>
+                <div class="file-actions">
+                    <button onclick="downloadFile('${file.name}')" title="Download">⬇️</button>
+                    <button onclick="deleteFile(this)" title="Delete">🗑️</button>
+                </div>
+            `;
+
+            // Tambahkan elemen file ke daftar
+            fileList.appendChild(fileItem);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // --- Fungsi Aksi (Simulasi) ---
+
+        function downloadFile(filename) {
+            alert(`Fitur Download: Akan mengunduh file "${filename}".\nDi backend, ini akan mengarahkan ke link download file.`);
+            // Contoh implementasi backend: window.location.href = `/download?file=${filename}`;
+        }
+
+        function deleteFile(buttonElement) {
+            if (confirm('Apakah Anda yakin ingin menghapus file ini?')) {
+                const fileItem = buttonElement.closest('.file-item');
+                const fileName = fileItem.querySelector('.file-name').textContent;
+                
+                alert(`Fitur Hapus: Akan menghapus file "${fileName}" dari server.\nDi backend, ini akan mengirim permintaan DELETE ke server.`);
+                
+                // Hapus elemen dari tampilan
+                fileItem.remove();
+            }
+        }
+
+    </script>
+</body>
+</html>
