@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Kirim Nomor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .container {
+            background: #ffffff;
+            color: #333;
+            width: 100%;
+            max-width: 420px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #2c5364;
+        }
+
+        p {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 25px;
+            color: #666;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2c5364;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #2c5364;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #203a43;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Kirim Nomor</h1>
+    <p>Masukkan nomor WhatsApp Anda untuk melanjutkan</p>
+
+    <label for="nomor">Nomor WhatsApp</label>
+    <input type="tel" id="nomor" placeholder="Contoh: 628123456789" required>
+
+    <button onclick="kirimNomor()">Kirim</button>
+
+    <div class="footer">
+        © 2025 Kirim Nomor
+    </div>
+</div>
+
+<script>
+    function kirimNomor() {
+        const nomor = document.getElementById('nomor').value.trim();
+
+        if (nomor === "") {
+            alert("Nomor tidak boleh kosong!");
+            return;
+        }
+
+        if (!/^[0-9]+$/.test(nomor)) {
+            alert("Nomor hanya boleh angka!");
+            return;
+        }
+
+        // Contoh aksi (redirect ke WhatsApp)
+        const pesan = encodeURIComponent("Halo, ini nomor saya: " + nomor);
+        const url = "https://wa.me/" + nomor + "?text=" + pesan;
+
+        window.location.href = url;
+    }
+</script>
+
+</body>
+</html>
