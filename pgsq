@@ -1,0 +1,12 @@
+kirimnomor-clone/
+├── server.js
+├── package.json
+├── views/
+│   ├── layout.ejs
+│   ├── home.ejs
+│   ├── login.ejs
+│   ├── signup.ejs
+│   └── dashboard.ejs
+├── public/
+│   └── style.css
+└── db.sqlite
